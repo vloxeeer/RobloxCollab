@@ -1,19 +1,33 @@
 @echo off
 title RobloxCollab Installer
 echo ------------------------------------------
-echo RobloxCollab: Installing...
+echo RobloxCollab: Cleaning old files...
 echo ------------------------------------------
 
-:: Проверка Node.js
-node -v >nul 2>&1
+cd app
+:: Удаляем сломанные папки если они есть
+if exist node_modules ( rd /s /q node_modules )
+if exist package-lock.json ( del /q package-lock.json )
+
+echo ------------------------------------------
+echo RobloxCollab: Installing (Using Mirror)...
+echo ------------------------------------------
+
+:: Установка переменной для обхода таймаутов Electron
+set ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
+
+call npm install --network-timeout=100000
+
 if %errorlevel% neq 0 (
-    echo ERROR: Node.js not found! Please install it from https://nodejs.org
+    echo.
+    echo ------------------------------------------
+    echo ERROR: Installation failed! 
+    echo Please check your internet or use a VPN.
+    echo ------------------------------------------
     pause
     exit
 )
 
-cd app
-call npm install
 echo ------------------------------------------
 echo SUCCESS: Installation complete!
 echo ------------------------------------------
