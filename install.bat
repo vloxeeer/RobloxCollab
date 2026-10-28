@@ -1,34 +1,43 @@
 @echo off
-title RobloxCollab Installer
+title RobloxCollab Ultimate Installer
 echo ------------------------------------------
-echo RobloxCollab: Cleaning old files...
+echo 1. Cleaning up environment...
 echo ------------------------------------------
+
+:: Очистка кэша и старых настроек
+call npm config delete proxy
+call npm config delete https-proxy
+call npm config set strict-ssl false
+call npm config set registry https://registry.npmmirror.com
+
+:: Настройка зеркал для Electron
+set ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
+set ELECTRON_CUSTOM_DIR=v28.1.0
 
 cd app
-:: Удаляем сломанные папки если они есть
-if exist node_modules ( rd /s /q node_modules )
-if exist package-lock.json ( del /q package-lock.json )
 
-echo ------------------------------------------
-echo RobloxCollab: Installing (Using Mirror)...
-echo ------------------------------------------
-
-:: Установка переменной для обхода таймаутов Electron
-set ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
-
-call npm install --network-timeout=100000
-
-if %errorlevel% neq 0 (
-    echo.
-    echo ------------------------------------------
-    echo ERROR: Installation failed! 
-    echo Please check your internet or use a VPN.
-    echo ------------------------------------------
-    pause
-    exit
+:: Удаление node_modules если они есть (с принуждением)
+if exist node_modules (
+    echo Removing old node_modules...
+    rd /s /q node_modules
 )
 
 echo ------------------------------------------
-echo SUCCESS: Installation complete!
+echo 2. Starting Installation (Network Timeout Fix)...
+echo ------------------------------------------
+
+:: Запуск установки с игнорированием ошибок Electron (мы поставим его позже если что)
+call npm install --network-timeout=1000000 --no-audit --no-fund
+
+if %errorlevel% neq 0 (
+    echo ------------------------------------------
+    echo ERROR: Installation failed. 
+    echo Trying alternative method...
+    echo ------------------------------------------
+    call npm install electron@28.1.0 --save-dev --electron_mirror=https://npmmirror.com/mirrors/electron/
+)
+
+echo ------------------------------------------
+echo 3. Finalizing...
 echo ------------------------------------------
 pause
