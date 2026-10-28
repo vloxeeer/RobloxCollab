@@ -1,4 +1,6 @@
 @echo off
-chcp 65001 >nul
+title RobloxCollab Launcher
+echo Starting RobloxCollab UI...
 cd app
-npx electron .
+npm start
+pause

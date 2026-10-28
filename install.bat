@@ -1,34 +1,20 @@
 @echo off
-chcp 65001 >nul
-echo.
-echo  ╔══════════════════════════════════════════╗
-echo  ║       RobloxCollab — Установка           ║
-echo  ╚══════════════════════════════════════════╝
-echo.
+title RobloxCollab Installer
+echo ------------------------------------------
+echo RobloxCollab: Installing...
+echo ------------------------------------------
 
-echo [1/2] Проверяю Node.js...
-node --version >nul 2>&1
-if errorlevel 1 (
-    echo.
-    echo  ОШИБКА: Node.js не найден!
-    echo  Скачай с https://nodejs.org и установи
-    echo  Потом запусти install.bat снова
-    echo.
+:: Проверка Node.js
+node -v >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Node.js not found! Please install it from https://nodejs.org
     pause
     exit
 )
-echo  ✓ Node.js найден
 
-echo.
-echo [2/2] Устанавливаю зависимости...
 cd app
 call npm install
-cd ..
-
-echo.
-echo  ╔══════════════════════════════════════════╗
-echo  ║       Установка завершена!               ║
-echo  ║       Запусти start.bat                  ║
-echo  ╚══════════════════════════════════════════╝
-echo.
+echo ------------------------------------------
+echo SUCCESS: Installation complete!
+echo ------------------------------------------
 pause
