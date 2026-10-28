@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RobloxCollab</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- ===== TITLE BAR ===== -->
+    <div class="titlebar" id="titlebar">
+        <div class="titlebar-left">
+            <div class="titlebar-icon">🔗</div>
+            <span class="titlebar-title">RobloxCollab</span>
+            <span class="titlebar-version">v1.0.0</span>
+        </div>
+        <div class="titlebar-controls">
+            <button class="tb-btn tb-min" onclick="api.minimize()">─</button>
+            <button class="tb-btn tb-max" onclick="api.maximize()">□</button>
+            <button class="tb-btn tb-close" onclick="api.close()">✕</button>
+        </div>
+    </div>
+
+    <!-- ===== MAIN LAYOUT ===== -->
+    <div class="main-layout">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard')">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">Главная</span>
+                </button>
+                <button class="nav-btn" data-page="server" onclick="showPage('server')">
+                    <span class="nav-icon">⚡</span>
+                    <span class="nav-text">Сервер</span>
+                </button>
+                <button class="nav-btn" data-page="rooms" onclick="showPage('rooms')">
+                    <span class="nav-icon">🚪</span>
+                    <span class="nav-text">Комнаты</span>
+                </button>
+                <button class="nav-btn" data-page="tunnel" onclick="showPage('tunnel')">
+                    <span class="nav-icon">🌐</span>
+                    <span class="nav-text">Интернет</span>
+                </button>
+                <button class="nav-btn" data-page="plugin" onclick="showPage('plugin')">
+                    <span class="nav-icon">🧩</span>
+                    <span class="nav-text">Плагин</span>
+                </button>
+                <button class="nav-btn" data-page="logs" onclick="showPage('logs')">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Логи</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="server-indicator" id="sidebarIndicator">
+                    <div class="indicator-dot offline"></div>
+                    <span>Сервер выкл.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- ===== DASHBOARD ===== -->
+            <div class="page active" id="page-dashboard">
+                <div class="page-header">
+                    <h1>🏠 Добро пожаловать!</h1>
+                    <p class="page-subtitle">Панель управления RobloxCollab</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dash-card stat-card" id="stat-server">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="dash-server-status">Выключен</div>
+                            <div class="stat-label">Сервер</div>
+                        </div>
+                    </div>
+                    <div class="dash-card stat-card" id="stat-rooms">
+                        <div class="stat-icon">🚪</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="dash-rooms-count">0</div>
+                            <div class="stat-label">Комнат</div>
+                        </div>
+                    </div>
+                    <div class="dash-card stat-card" id="stat-users">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="dash-users-count">0</div>
+                            <div class="stat-label">Онлайн</div>
+                        </div>
+                    </div>
+                    <div class="dash-card stat-card" id="stat-ops">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="dash-ops-count">0</div>
+                            <div class="stat-label">Операций</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dash-card quick-actions">
+                    <h3>⚡ Быстрые действия</h3>
+                    <div class="actions-grid">
+                        <button class="action-btn action-start" onclick="quickStartServer()">
+                            <span class="action-icon">▶️</span>
+                            <span>Запустить сервер</span>
+                        </button>
+                        <button class="action-btn action-tunnel" onclick="showPage('tunnel')">
+                            <span class="action-icon">🌐</span>
+                            <span>Открыть туннель</span>
+                        </button>
+                        <button class="action-btn action-plugin" onclick="quickInstallPlugin()">
+                            <span class="action-icon">🧩</span>
+                            <span>Установить плагин</span>
+                        </button>
+                        <button class="action-btn action-help" onclick="showPage('plugin')">
+                            <span class="action-icon">📖</span>
+                            <span>Инструкция</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dash-card" id="recent-activity">
+                    <h3>📋 Последние события</h3>
+                    <div class="activity-list" id="activityList">
+                        <div class="activity-empty">Пока нет событий. Запустите сервер!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SERVER PAGE ===== -->
+            <div class="page" id="page-server">
+                <div class="page-header">
+                    <h1>⚡ Управление сервером</h1>
+                    <p class="page-subtitle">Настройте и запустите сервер для совместной работы</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Настройки сервера</h3>
+                        <div class="server-badge" id="serverBadge">
+                            <div class="indicator-dot offline"></div>
+                            <span>Остановлен</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Порт сервера</label>
+                        <input type="number" id="serverPort" value="3000" min="1000" max="65535" class="input">
+                        <span class="form-hint">По умолчанию: 3000. Измените если порт занят.</span>
+                    </div>
+
+                    <div class="btn-row">
+                        <button class="btn btn-success btn-lg" id="btnStartServer" onclick="toggleServer()">
+                            <span class="btn-icon">▶️</span>
+                            Запустить сервер
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card" id="serverInfoCard" style="display:none">
+                    <div class="card-header">
+                        <h3>📡 Информация о сервере</h3>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Локальный адрес</span>
+                            <div class="info-value copyable" id="localUrl" onclick="copyText(this)">
+                                http://localhost:3000
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Статус</span>
+                            <div class="info-value" id="serverUptime">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ROOMS PAGE ===== -->
+            <div class="page" id="page-rooms">
+                <div class="page-header">
+                    <h1>🚪 Комнаты</h1>
+                    <p class="page-subtitle">Управление активными комнатами</p>
+                </div>
+
+                <div class="card" id="roomsListCard">
+                    <div class="card-header">
+                        <h3>Активные комнаты</h3>
+                        <button class="btn btn-sm btn-outline" onclick="refreshRooms()">🔄 Обновить</button>
+                    </div>
+                    <div id="roomsList" class="rooms-list">
+                        <div class="empty-state">
+                            <div class="empty-icon">🚪</div>
+                            <p>Нет активных комнат</p>
+                            <p class="empty-hint">Комнаты создаются через плагин в Roblox Studio</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== TUNNEL PAGE ===== -->
+            <div class="page" id="page-tunnel">
+                <div class="page-header">
+                    <h1>🌐 Интернет-доступ</h1>
+                    <p class="page-subtitle">Создайте туннель для игры с друзьями через интернет</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Туннель</h3>
+                        <div class="server-badge" id="tunnelBadge">
+                            <div class="indicator-dot offline"></div>
+                            <span>Отключён</span>
+                        </div>
+                    </div>
+
+                    <div class="info-box info-box-blue">
+                        <strong>💡 Зачем это нужно?</strong>
+                        <p>Туннель позволяет вашим друзьям подключиться к серверу через интернет без VPN, Hamachi или
+                            Radmin. Просто отправьте им ссылку!</p>
+                    </div>
+
+                    <div class="btn-row">
+                        <button class="btn btn-primary btn-lg" id="btnStartTunnel" onclick="toggleTunnel()">
+                            <span class="btn-icon">🌐</span>
+                            Открыть туннель
+                        </button>
+                    </div>
+
+                    <div id="tunnelInfo" style="display:none">
+                        <div class="tunnel-url-box">
+                            <label>Ссылка для друзей:</label>
+                            <div class="tunnel-url" id="tunnelUrl" onclick="copyText(this)">
+                                https://...
+                            </div>
+                            <span class="copy-hint">Нажмите чтобы скопировать</span>
+                        </div>
+
+                        <div class="info-box info-box-green">
+                            <strong>✅ Как использовать:</strong>
+                            <ol>
+                                <li>Скопируйте ссылку выше</li>
+                                <li>Отправьте её другу</li>
+                                <li>Друг вставляет ссылку в плагин в поле "Server URL"</li>
+                                <li>Готово! Можно работать вместе</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== PLUGIN PAGE ===== -->
+            <div class="page" id="page-plugin">
+                <div class="page-header">
+                    <h1>🧩 Плагин для Studio</h1>
+                    <p class="page-subtitle">Установка и настройка плагина</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Автоматическая установка</h3>
+                    </div>
+                    <p class="card-text">Нажмите кнопку чтобы автоматически установить плагин в папку Roblox Studio.</p>
+                    <button class="btn btn-success btn-lg" onclick="installPlugin()">
+                        <span class="btn-icon">📥</span>
+                        Установить плагин
+                    </button>
+                    <div id="pluginInstallResult" class="install-result" style="display:none"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📖 Пошаговая инструкция</h3>
+                    </div>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Запустите сервер</h4>
+                                <p>Перейдите на вкладку "Сервер" и нажмите "Запустить"</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Установите плагин</h4>
+                                <p>Нажмите кнопку "Установить плагин" выше и перезапустите Studio</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Включите HTTP в Studio</h4>
+                                <p>Game Settings → Security → Allow HTTP Requests → <strong>ON</strong></p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Откройте плагин</h4>
+                                <p>Нажмите кнопку "🔗 Collab" на панели инструментов Studio</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h4>Создайте комнату</h4>
+                                <p>Введите имя, создайте комнату и отправьте код другу</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">6</div>
+                            <div class="step-content">
+                                <h4>Для интернета</h4>
+                                <p>Откройте вкладку "Интернет", создайте туннель и отправьте ссылку другу. Друг вводит
+                                    ссылку в поле "Server URL" в плагине.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== LOGS PAGE ===== -->
+            <div class="page" id="page-logs">
+                <div class="page-header">
+                    <h1>📋 Логи сервера</h1>
+                    <p class="page-subtitle">Все события сервера в реальном времени</p>
+                </div>
+
+                <div class="card logs-card">
+                    <div class="card-header">
+                        <h3>Консоль</h3>
+                        <button class="btn btn-sm btn-outline" onclick="clearLogs()">🗑️ Очистить</button>
+                    </div>
+                    <div class="logs-container" id="logsContainer">
+                        <div class="log-entry log-info">Ожидание запуска сервера...</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="renderer.js"></script>
+</body>
+
+</html>

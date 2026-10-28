@@ -1,0 +1,34 @@
+{
+    "name": "roblox-collab",
+    "version": "1.0.0",
+    "description": "RobloxCollab - совместная работа в Roblox Studio",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "build": "electron-builder"
+    },
+    "build": {
+        "appId": "com.robloxcollab.app",
+        "productName": "RobloxCollab",
+        "win": {
+            "target": "nsis",
+            "icon": "icon.ico"
+        },
+        "nsis": {
+            "oneClick": true,
+            "allowToChangeInstallationDirectory": false
+        }
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "ws": "^8.16.0",
+        "uuid": "^9.0.0",
+        "compression": "^1.7.4",
+        "cors": "^2.8.5",
+        "localtunnel": "^2.0.2"
+    },
+    "devDependencies": {
+        "electron": "^28.1.0",
+        "electron-builder": "^24.9.1"
+    }
+}
